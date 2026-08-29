@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - CIVIC-PREDICT AI{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+{% block topbar_breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h1>Good {{ greeting }}, {{ session.get('name', 'Administrator') }}</h1>
+    <p class="text-muted mb-0">Here's the current state of public-service risks across your region.</p>
+  </div>
+</div>
+
+<!-- KPI Grid -->
+<div class="kpi-grid mb-4">
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-exclamation-circle"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ total_issues }}</div>
+      <div class="kpi-label">Total Active Issues</div>
+    </div>
+    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 12%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-radiation"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ critical_count }}</div>
+      <div class="kpi-label">Critical Risks</div>
+    </div>
+    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 5%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-triangle-exclamation"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ high_count }}</div>
+      <div class="kpi-label">High Risks</div>
+    </div>
+    <div class="kpi-trend down"><i class="fas fa-arrow-down"></i> 3%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ predicted_count }}</div>
+      <div class="kpi-label">Predicted to Worsen</div>
+    </div>
+    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 8%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-stopwatch"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ avg_response_time }}</div>
+      <div class="kpi-label">Avg Response Time</div>
+    </div>
+    <div class="kpi-trend down"><i class="fas fa-arrow-down"></i> 15%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon"><i class="fas fa-circle-check"></i></div>
+    <div class="kpi-data">
+      <div class="kpi-value">{{ resolved_count }}</div>
+      <div class="kpi-label">Resolved Issues</div>
+    </div>
+    <div class="kpi-trend up"><i class="fas fa-arrow-up"></i> 22%</div>
+  </div>
+</div>
+
+<!-- Charts Row: Risk Trend + Risk Distribution -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-chart-line"></i> Risk Trend (6 Months)</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="riskTrendChart" height="250"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-chart-pie"></i> Risk Distribution</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="riskDistChart" height="250"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Priority Issues Table -->
+<div class="card mb-4">
+  <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+    <h5 style="margin:0"><i class="fas fa-fire"></i> Priority Issues</h5>
+    <a href="{{ url_for('issues') }}" class="btn btn-sm btn-outline">View All</a>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Risk</th>
+            <th>Issue</th>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Trend</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for issue in priority_issues %}
+          <tr>
+            <td>
+              <div class="risk-score {{ issue.severity|lower }}">{{ issue.risk_score }}</div>
+            </td>
+            <td><strong>{{ issue.title }}</strong></td>
+            <td>{{ issue.location_name }}</td>
+            <td>{{ issue.category }}</td>
+            <td><span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }}</span></td>
+            <td><span class="badge badge-{{ issue.status|lower|replace(' ', '-') }}">{{ issue.status }}</span></td>
+            <td>
+              {% if issue.predicted_trend == 'Worsening' %}
+              <span class="trend-worsening"><i class="fas fa-arrow-trend-up"></i> Worsening</span>
+              {% elif issue.predicted_trend == 'Improving' %}
+              <span class="trend-improving"><i class="fas fa-arrow-trend-down"></i> Improving</span>
+              {% else %}
+              <span class="trend-stable"><i class="fas fa-minus"></i> Stable</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('issue_detail', issue_id=issue.id) }}" class="btn btn-sm btn-outline">
+                <i class="fas fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Row: Category Chart + Recent Activity -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-chart-bar"></i> Issues by Category</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="categoryChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h5><i class="fas fa-clock"></i> Recent Activity</h5>
+      </div>
+      <div class="card-body">
+        <div class="activity-feed">
+          {% for act in activities[:10] %}
+          <div class="activity-item">
+            <div class="activity-icon">
+              {% if act.type == 'risk_change' %}
+              <i class="fas fa-chart-line" style="color:#ca8a04"></i>
+              {% elif act.type == 'new_complaint' %}
+              <i class="fas fa-comment" style="color:#0ea5e9"></i>
+              {% elif act.type == 'status_change' %}
+              <i class="fas fa-arrows-rotate" style="color:#1a73e8"></i>
+              {% elif act.type == 'prediction' %}
+              <i class="fas fa-robot" style="color:#16a34a"></i>
+              {% elif act.type == 'alert' %}
+              <i class="fas fa-bell" style="color:#dc2626"></i>
+              {% else %}
+              <i class="fas fa-circle-info" style="color:#6b7280"></i>
+              {% endif %}
+            </div>
+            <div class="activity-text">
+              <div><strong>{{ act.title }}</strong></div>
+              <div>{{ act.description }}</div>
+            </div>
+            <div class="activity-time">{{ act.timestamp }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Risk Distribution Doughnut Chart
+  const riskCtx = document.getElementById('riskDistChart').getContext('2d');
+  new Chart(riskCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Critical', 'High', 'Medium', 'Low'],
+      datasets: [{
+        data: [{{ critical_count }}, {{ high_count }}, {{ medium_count }}, {{ low_count }}],
+        backgroundColor: ['#dc2626', '#ea580c', '#ca8a04', '#16a34a'],
+        borderWidth: 0,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
+      },
+      cutout: '65%'
+    }
+  });
+
+  // Risk Trend Line Chart
+  const trendCtx = document.getElementById('riskTrendChart').getContext('2d');
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+      datasets: [{
+        label: 'Critical',
+        data: [18, 19, 20, 21, 21, {{ critical_count }}],
+        borderColor: '#dc2626',
+        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+        fill: true,
+        tension: 0.4
+      }, {
+        label: 'High',
+        data: [15, 17, 18, 19, 20, {{ high_count }}],
+        borderColor: '#ea580c',
+        backgroundColor: 'rgba(234, 88, 12, 0.1)',
+        fill: true,
+        tension: 0.4
+      }, {
+        label: 'Medium',
+        data: [8, 7, 6, 5, 4, {{ medium_count }}],
+        borderColor: '#ca8a04',
+        backgroundColor: 'rgba(202, 138, 4, 0.1)',
+        fill: true,
+        tension: 0.4
+      }, {
+        label: 'Low',
+        data: [3, 3, 3, 4, 4, {{ low_count }}],
+        borderColor: '#16a34a',
+        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { usePointStyle: true } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Category Bar Chart
+  const catCtx = document.getElementById('categoryChart').getContext('2d');
+  new Chart(catCtx, {
+    type: 'bar',
+    data: {
+      labels: {{ category_labels|safe }},
+      datasets: [{
+        label: 'Issues',
+        data: {{ category_data|safe }},
+        backgroundColor: ['#1a73e8', '#dc2626', '#ea580c', '#0ea5e9', '#ca8a04', '#8b5cf6', '#06b6d4', '#16a34a'],
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+</script>
+{% endblock %}

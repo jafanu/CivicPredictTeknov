@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% block title %}CIVIC-PREDICT AI - Predictive Public Service Intelligence{% endblock %}
+
+{% block fullpage %}
+<div class="landing-page">
+    <!-- Navigation -->
+    <nav class="landing-nav">
+        <div class="landing-nav-inner">
+            <div class="landing-logo">
+                <i class="fas fa-brain"></i>
+                <span>CIVIC-PREDICT AI</span>
+            </div>
+            <div class="landing-nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#demo">Demo</a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm ms-3">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="landing-hero">
+        <div class="hero-bg-pattern"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-flask"></i> Generative AI for Government
+                </div>
+                <h1>Predict Problems.<br>Prioritize Action.<br><span class="text-accent">Improve Public Service.</span></h1>
+                <p class="hero-subtitle">
+                    CIVIC-PREDICT AI transforms public-service data into predictive insights, risk scores, and actionable recommendations for smarter government decision-making.
+                </p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-hero-primary">
+                        <i class="fas fa-th-large"></i> Explore Dashboard
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-hero-outline">
+                        <i class="fas fa-play-circle"></i> View Demo
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">50+</span>
+                        <span class="hero-stat-label">Active Issues Monitored</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">5</span>
+                        <span class="hero-stat-label">Cities Covered</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-value">8</span>
+                        <span class="hero-stat-label">Data Sources Integrated</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem -->
+    <section class="landing-section" id="problem">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">The Problem</span>
+                <h2>Reactive Systems Leave Communities Waiting</h2>
+                <p>Current public-service mechanisms wait for problems to occur and be reported before taking action.</p>
+            </div>
+            <div class="problem-cards">
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fas fa-clock"></i></div>
+                    <h4>Delayed Response</h4>
+                    <p>Issues are only addressed after citizens discover and report them, causing unnecessary delays.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fas fa-redo"></i></div>
+                    <h4>Repeated Problems</h4>
+                    <p>Without pattern analysis, the same issues recur in the same locations repeatedly.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fas fa-bullseye"></i></div>
+                    <h4>Unoptimized Resources</h4>
+                    <p>Government resources are spread thin instead of being directed to highest-priority areas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="landing-section section-dark" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">How It Works</span>
+                <h2>From Data to Decisive Action</h2>
+                <p>A clear intelligence pipeline that transforms scattered data into government-ready insights.</p>
+            </div>
+            <div class="workflow-pipeline">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon"><i class="fas fa-database"></i></div>
+                    <h4>Data Collection</h4>
+                    <p>Complaints, assets, history, sensors</p>
+                </div>
+                <div class="workflow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon"><i class="fas fa-link"></i></div>
+                    <h4>Integration</h4>
+                    <p>Unified data from all sources</p>
+                </div>
+                <div class="workflow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon"><i class="fas fa-search"></i></div>
+                    <h4>Pattern Detection</h4>
+                    <p>AI identifies trends & risks</p>
+                </div>
+                <div class="workflow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="workflow-step highlight">
+                    <div class="step-number">4</div>
+                    <div class="step-icon"><i class="fas fa-gauge-high"></i></div>
+                    <h4>Risk Score</h4>
+                    <p>Public Service Risk Score 0-100</p>
+                </div>
+                <div class="workflow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-icon"><i class="fas fa-chart-line"></i></div>
+                    <h4>Prediction</h4>
+                    <p>Forecast future developments</p>
+                </div>
+                <div class="workflow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="workflow-step highlight">
+                    <div class="step-number">6</div>
+                    <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h4>Recommendation</h4>
+                    <p>AI-generated action plans</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="landing-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Key Features</span>
+                <h2>Intelligent Decision Support for Government</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-gauge-high"></i></div>
+                    <h4>Public Service Risk Score</h4>
+                    <p>Every issue receives a 0-100 risk score based on complaint frequency, historical patterns, severity, and potential public impact.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h4>Interactive Risk Map</h4>
+                    <p>Geographic visualization of risks across the region with color-coded markers and detailed popups.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <h4>AI Predictions</h4>
+                    <p>Forecast which problems will worsen, which are recurring, and identify emerging risks before they escalate.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h4>Smart Recommendations</h4>
+                    <p>Actionable, department-specific recommendations generated by AI based on risk analysis and historical data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-bar"></i></div>
+                    <h4>Advanced Analytics</h4>
+                    <p>Comprehensive dashboards with trend analysis, department performance, and geographic distribution insights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                    <h4>AI Decision Assistant</h4>
+                    <p>Chat-based assistant that helps officials query data, understand risks, and make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Score Section -->
+    <section class="landing-section section-dark" id="demo">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Risk Intelligence</span>
+                <h2>Public Service Risk Score</h2>
+                <p>Each issue is analyzed and assigned a score from 0 to 100 based on multiple risk factors.</p>
+            </div>
+            <div class="risk-scale">
+                <div class="risk-item risk-critical-bg">
+                    <div class="risk-range">75-100</div>
+                    <div class="risk-label">Critical</div>
+                    <p>Immediate attention required. High probability of escalating impact.</p>
+                </div>
+                <div class="risk-item risk-high-bg">
+                    <div class="risk-range">50-74</div>
+                    <div class="risk-label">High</div>
+                    <p>Urgent action needed. Risk of significant public impact.</p>
+                </div>
+                <div class="risk-item risk-medium-bg">
+                    <div class="risk-range">25-49</div>
+                    <div class="risk-label">Medium</div>
+                    <p>Monitor closely. May require intervention if conditions change.</p>
+                </div>
+                <div class="risk-item risk-low-bg">
+                    <div class="risk-range">0-24</div>
+                    <div class="risk-label">Low</div>
+                    <p>Stable condition. Include in routine maintenance schedule.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Departments -->
+    <section class="landing-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Target Users</span>
+                <h2>Built for Government Agencies</h2>
+            </div>
+            <div class="dept-grid">
+                <div class="dept-card">
+                    <i class="fas fa-hard-hat"></i>
+                    <h4>Dinas PUPR</h4>
+                    <p>Public Works & Spatial Planning — roads, bridges, drainage, infrastructure</p>
+                </div>
+                <div class="dept-card">
+                    <i class="fas fa-traffic-light"></i>
+                    <h4>Dinas Perhubungan</h4>
+                    <p>Transportation — traffic management, street lighting, public transit</p>
+                </div>
+                <div class="dept-card">
+                    <i class="fas fa-leaf"></i>
+                    <h4>Dinas Lingkungan Hidup</h4>
+                    <p>Environment — waste management, pollution, environmental monitoring</p>
+                </div>
+                <div class="dept-card">
+                    <i class="fas fa-network-wired"></i>
+                    <h4>Diskominfo</h4>
+                    <p>Communications & IT — data infrastructure, digital services, connectivity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="landing-cta">
+        <div class="container">
+            <h2>Ready to Transform Public Service?</h2>
+            <p>Explore the CIVIC-PREDICT AI dashboard with realistic simulated data.</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-hero-primary btn-lg">
+                <i class="fas fa-th-large"></i> Launch Dashboard Demo
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-brain"></i>
+                    <span>CIVIC-PREDICT AI</span>
+                </div>
+                <p>Predictive Public Service Intelligence Platform</p>
+                <p class="footer-credit">Ventor Team — SMA Islam Al Azhar 4 Bekasi | TEKNOVISTAFEST 2026</p>
+                <p class="footer-disclaimer">
+                    <small>This is a prototype using simulated data for demonstration purposes. 
+                    Not connected to actual government databases.</small>
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>
+{% endblock %}

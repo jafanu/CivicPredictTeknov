@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}{{ issue.title }} - CIVIC-PREDICT AI{% endblock %}
+{% block topbar_title %}Issue Detail{% endblock %}
+{% block topbar_breadcrumb %}Issues / {{ issue.title }}{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="mb-3">
+  <a href="{{ url_for('issues') }}" class="btn btn-outline btn-sm">
+    <i class="fas fa-arrow-left"></i> Back to Issues
+  </a>
+</div>
+
+<!-- Issue Header Card -->
+<div class="card issue-header-card mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1 class="issue-title">{{ issue.title }}</h1>
+        <p class="issue-location">
+          <i class="fas fa-map-marker-alt"></i> {{ issue.location_name }}, {{ issue.city }}
+        </p>
+        <div class="issue-badges mt-2">
+          <span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }}</span>
+          <span class="badge badge-{{ issue.status|lower|replace(' ', '-') }}">{{ issue.status }}</span>
+          <span class="badge">{{ issue.category }}</span>
+          <span class="badge">{{ issue.department }}</span>
+        </div>
+      </div>
+      <div class="risk-score-lg {{ issue.severity|lower }}">
+        <span class="risk-score-value">{{ issue.risk_score }}</span>
+        <span class="risk-score-max">/ 100</span>
+        <span class="risk-score-label">{{ issue.severity }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left Column (col-lg-8) -->
+  <div class="col-lg-8">
+    <!-- Risk Score Gauge -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-gauge-high"></i> Public Service Risk Score</h5>
+      </div>
+      <div class="card-body">
+        <div style="text-align:center">
+          <svg viewBox="0 0 200 120" style="max-width:320px">
+            <defs>
+              <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#16a34a"/>
+                <stop offset="33%" style="stop-color:#ca8a04"/>
+                <stop offset="66%" style="stop-color:#ea580c"/>
+                <stop offset="100%" style="stop-color:#dc2626"/>
+              </linearGradient>
+            </defs>
+            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e5e7eb" stroke-width="16" stroke-linecap="round"/>
+            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGradient)" stroke-width="16" stroke-linecap="round"
+                  stroke-dasharray="{{ (issue.risk_score / 100 * 251.2)|int }} 251.2"/>
+            <text x="100" y="80" text-anchor="middle" font-size="28" font-weight="700" fill="#111827">{{ issue.risk_score }}</text>
+            <text x="100" y="105" text-anchor="middle" font-size="11" fill="#6b7280">Risk Score</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Issue Overview -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-circle-info"></i> Issue Overview</h5>
+      </div>
+      <div class="card-body">
+        <p style="color:#6b7280;margin-bottom:1.25rem">{{ issue.description }}</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="overview-label">Category</span>
+            <span class="overview-value">{{ issue.category }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Department</span>
+            <span class="overview-value">{{ issue.department }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Date Detected</span>
+            <span class="overview-value">{{ issue.reported_date }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Status</span>
+            <span class="overview-value">{{ issue.status }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Complaints</span>
+            <span class="overview-value">{{ issue.complaint_count }} reports</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Asset Condition</span>
+            <span class="overview-value">{{ issue.asset_condition }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Public Impact</span>
+            <span class="overview-value">{{ issue.public_impact }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Historical Incidents</span>
+            <span class="overview-value">{{ issue.historical_incidents }} past events</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Factors -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-layer-group"></i> Risk Factors</h5>
+      </div>
+      <div class="card-body">
+        <div class="risk-factors">
+          <div class="risk-factor">
+            <div class="factor-header">
+              <span class="factor-name">Complaint frequency</span>
+              <span class="factor-score">+{{ (issue.complaint_count * 0.5)|int }}</span>
+            </div>
+            <div class="factor-bar"><div class="factor-fill" style="width:{{ [issue.complaint_count * 1.5, 100]|min }}%"></div></div>
+          </div>
+          <div class="risk-factor">
+            <div class="factor-header">
+              <span class="factor-name">Repeated incidents ({{ issue.historical_incidents }})</span>
+              <span class="factor-score">+{{ issue.historical_incidents * 4 }}</span>
+            </div>
+            <div class="factor-bar"><div class="factor-fill" style="width:{{ [issue.historical_incidents * 10, 100]|min }}%"></div></div>
+          </div>
+          <div class="risk-factor">
+            <div class="factor-header">
+              <span class="factor-name">High public impact</span>
+              <span class="factor-score">+{{ {'High': 20, 'Medium': 12, 'Low': 5}.get(issue.public_impact, 10) }}</span>
+            </div>
+            <div class="factor-bar"><div class="factor-fill" style="width:{{ {'High': 80, 'Medium': 50, 'Low': 20}.get(issue.public_impact, 40) }}%"></div></div>
+          </div>
+          <div class="risk-factor">
+            <div class="factor-header">
+              <span class="factor-name">Poor asset condition</span>
+              <span class="factor-score">+{{ {'Poor': 16, 'Fair': 8, 'Good': 3, 'Unknown': 5}.get(issue.asset_condition, 5) }}</span>
+            </div>
+            <div class="factor-bar"><div class="factor-fill" style="width:{{ {'Poor': 80, 'Fair': 45, 'Good': 15, 'Unknown': 25}.get(issue.asset_condition, 25) }}%"></div></div>
+          </div>
+          <div class="risk-factor">
+            <div class="factor-header">
+              <span class="factor-name">Recurrence pattern</span>
+              <span class="factor-score">+{{ (issue.historical_incidents * 2.5)|int }}</span>
+            </div>
+            <div class="factor-bar"><div class="factor-fill" style="width:{{ [issue.historical_incidents * 8, 100]|min }}%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column (col-lg-4) -->
+  <div class="col-lg-4">
+    <!-- AI Prediction Box -->
+    <div class="card prediction-box mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-robot"></i> AI Prediction</h5>
+      </div>
+      <div class="card-body">
+        <div class="prediction-trend" style="text-align:center;padding:0.75rem 0">
+          {% if issue.predicted_trend == 'Worsening' %}
+          <i class="fas fa-arrow-trend-up" style="color:#dc2626;font-size:1.5rem"></i>
+          <div style="color:#dc2626;font-weight:600;margin-top:0.25rem">Predicted to Worsen</div>
+          {% elif issue.predicted_trend == 'Improving' %}
+          <i class="fas fa-arrow-trend-down" style="color:#16a34a;font-size:1.5rem"></i>
+          <div style="color:#16a34a;font-weight:600;margin-top:0.25rem">Predicted to Improve</div>
+          {% else %}
+          <i class="fas fa-minus" style="color:#ca8a04;font-size:1.5rem"></i>
+          <div style="color:#ca8a04;font-weight:600;margin-top:0.25rem">Stable — Monitor</div>
+          {% endif %}
+        </div>
+        <p style="color:#6b7280;font-size:0.9rem;margin-top:1rem">
+          Based on historical patterns and current incident frequency, this issue has
+          {% if issue.predicted_trend == 'Worsening' %}
+          a <strong>high probability of worsening</strong> if intervention is delayed. The combination of {{ issue.complaint_count }} complaints and {{ issue.historical_incidents }} past incidents suggests an escalating pattern.
+          {% elif issue.predicted_trend == 'Improving' %}
+          an <strong>improving trend</strong> with recent interventions showing positive results. Continue monitoring to ensure sustained improvement.
+          {% else %}
+          a <strong>stable risk profile</strong>. No significant change predicted in the near term, but continued monitoring is recommended.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Recommended Action Box -->
+    <div class="card recommendation-box mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-lightbulb"></i> Recommended Action</h5>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }} Priority</span>
+        </div>
+        <p style="color:#374151;font-size:0.9rem">{{ issue.recommendation }}</p>
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-sm btn-primary" onclick="alert('Department assigned successfully')">
+            <i class="fas fa-users"></i> Assign Dept
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="alert('Action created successfully')">
+            <i class="fas fa-plus"></i> Create Action
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5><i class="fas fa-clock-rotate-left"></i> Timeline</h5>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          {% if activities %}
+          {% for act in activities %}
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">{{ act.title }}</div>
+            <div class="timeline-desc">{{ act.description }}</div>
+            <div class="timeline-time">{{ act.timestamp }}</div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">Issue Detected</div>
+            <div class="timeline-desc">Initial report filed for this issue.</div>
+            <div class="timeline-time">{{ issue.reported_date }}</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-title">AI Analysis Complete</div>
+            <div class="timeline-desc">Risk score calculated: {{ issue.risk_score }}/100 ({{ issue.severity }})</div>
+            <div class="timeline-time">{{ issue.reported_date }}</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

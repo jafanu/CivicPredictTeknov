@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Login - CIVIC-PREDICT AI{% endblock %}
+
+{% block fullpage %}
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <i class="fas fa-shield-halved"></i>
+      <h1 class="login-title">CIVIC-PREDICT AI</h1>
+      <p class="login-subtitle">Government Decision Support Platform</p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="text-center mb-4">
+      <h2 class="login-title" style="font-size:1.15rem">Select Your Role</h2>
+      <p class="login-subtitle">Click a role card to sign in (Demo Mode)</p>
+    </div>
+
+    <div class="role-grid">
+      <!-- Admin -->
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="username" value="admin">
+        <button type="submit" class="role-card">
+          <i class="fas fa-user-shield"></i>
+          <span class="role-name">Administrator</span>
+          <span class="role-desc">Full access</span>
+        </button>
+      </form>
+      <!-- Analyst -->
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="username" value="analyst">
+        <button type="submit" class="role-card">
+          <i class="fas fa-chart-line"></i>
+          <span class="role-name">Government Analyst</span>
+          <span class="role-desc">Analytics & data</span>
+        </button>
+      </form>
+      <!-- PUPR -->
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="username" value="pupr">
+        <button type="submit" class="role-card">
+          <i class="fas fa-hard-hat"></i>
+          <span class="role-name">Dinas PUPR</span>
+          <span class="role-desc">Infrastructure</span>
+        </button>
+      </form>
+      <!-- Dishub -->
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="username" value="dishub">
+        <button type="submit" class="role-card">
+          <i class="fas fa-traffic-light"></i>
+          <span class="role-name">Dinas Perhubungan</span>
+          <span class="role-desc">Transportation</span>
+        </button>
+      </form>
+      <!-- LH -->
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="username" value="lh">
+        <button type="submit" class="role-card">
+          <i class="fas fa-leaf"></i>
+          <span class="role-name">Dinas Lingkungan Hidup</span>
+          <span class="role-desc">Environment</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('landing') }}" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.9rem">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
