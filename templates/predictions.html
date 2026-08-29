@@ -86,7 +86,7 @@
             {% for issue in predictions[group_name] %}
             <div class="pred-card">
                 <div class="pred-card-header">
-                    <div class="risk-score risk-score.{{ issue.severity|lower }}">
+                    <div class="risk-score {{ issue.severity|lower }}">
                         {{ issue.risk_score }}
                     </div>
                     <div>
