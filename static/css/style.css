@@ -2830,10 +2830,14 @@ p {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   border: 3px solid;
+  box-sizing: border-box;
+  overflow: hidden;
   flex-shrink: 0;
+  text-align: center;
+  padding: 0 6px;
 }
 
 .risk-score-lg.critical {
@@ -2865,6 +2869,31 @@ p {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Inner stack for risk-score-lg (issue detail header gauge).
+   Values sized so value + max + label stack fits inside the
+   80px ring (74px inner diameter) at every severity label. */
+.risk-score-lg .risk-score-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.risk-score-lg .risk-score-max {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.risk-score-lg .risk-score-label {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .overview-grid {
@@ -3325,7 +3354,7 @@ p {
     gap: 8px;
   }
 
-  .step-arrow {
+  .workflow-arrow {
     transform: rotate(90deg);
     padding: 4px 0;
   }
@@ -4744,6 +4773,100 @@ p {
     }
   }
 */
+
+/* ============================================================
+   LANDING PAGE TEMPLATE COMPATIBILITY
+   ============================================================ */
+.problem-cards,
+.dept-grid {
+  display: grid;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.problem-cards { grid-template-columns: repeat(3, 1fr); }
+.dept-grid { grid-template-columns: repeat(4, 1fr); }
+
+.problem-card,
+.dept-card,
+.risk-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.problem-card { padding: 32px; }
+.problem-card:hover,
+.dept-card:hover,
+.risk-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.problem-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  color: var(--critical);
+  background: var(--critical-bg);
+}
+.problem-card h4,
+.dept-card h4 { margin-bottom: 8px; font-size: 16px; font-weight: 600; }
+.problem-card p,
+.dept-card p,
+.risk-item p { color: var(--text-secondary); line-height: 1.6; font-size: 14px; }
+
+.section-dark { background: var(--very-light-blue); }
+.section-dark .section-header h2 { color: var(--text); }
+.workflow-steps { max-width: 1200px; margin: 0 auto; }
+.workflow-step { text-align: center; padding: 24px 20px; flex: 1; min-width: 140px; }
+.workflow-step h4 { font-size: 14px; font-weight: 600; color: var(--text); }
+.workflow-step p { margin-top: 4px; font-size: 12px; color: var(--text-secondary); }
+.step-number { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+
+.workflow-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 18px;
+  padding-top: 28px;
+  flex-shrink: 0;
+}
+
+.workflow-step.highlight .step-number {
+  background: var(--bright-blue);
+  box-shadow: 0 0 0 6px rgba(47, 128, 237, 0.18);
+}
+
+.workflow-step.highlight h4 { color: var(--primary); }
+
+.risk-scale { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+.risk-item { padding: 28px; text-align: center; }
+.risk-range { font-size: 28px; font-weight: 700; }
+.risk-label { margin: 4px 0 8px; font-size: 14px; font-weight: 600; }
+.risk-critical-bg .risk-range, .risk-critical-bg .risk-label { color: var(--critical); }
+.risk-high-bg .risk-range, .risk-high-bg .risk-label { color: var(--high); }
+.risk-medium-bg .risk-range, .risk-medium-bg .risk-label { color: var(--medium); }
+.risk-low-bg .risk-range, .risk-low-bg .risk-label { color: var(--low); }
+
+.footer-content { text-align: center; }
+.footer-brand { display: inline-flex; align-items: center; gap: 8px; color: var(--white); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.footer-brand i { color: var(--bright-blue); }
+.landing-cta { text-align: center; padding: 80px 32px; background: var(--navy); }
+.landing-cta h2 { color: var(--white); margin-bottom: 12px; }
+.landing-cta p { color: rgba(255,255,255,.7); margin-bottom: 32px; }
+
+@media (max-width: 992px) {
+  .problem-cards, .dept-grid, .risk-scale { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .landing-nav-inner { padding: 16px 20px; }
+  .hero-buttons { flex-wrap: wrap; justify-content: center; }
+  .workflow-steps { flex-direction: column; }
+}
 
 /* ============================================================
    END OF STYLESHEET

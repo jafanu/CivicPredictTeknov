@@ -425,11 +425,11 @@ function initRiskMap(containerId, issues) {
         scrollWheelZoom: true
     });
 
-    // CartoDB Positron tiles for clean look
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
-        maxZoom: 18,
-        subdomains: 'abcd'
+    // OpenStreetMap tiles are free and do not require a Carto API key.
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        subdomains: ['a', 'b', 'c']
     }).addTo(civicMap);
 
     civicMarkerLayer = L.layerGroup().addTo(civicMap);

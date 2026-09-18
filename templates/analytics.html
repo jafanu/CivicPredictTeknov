@@ -103,7 +103,7 @@
                         <td><span class="badge badge-critical">{{ cat.critical }}</span></td>
                         <td><span class="badge badge-high">{{ cat.high }}</span></td>
                         <td>
-                            <div class="risk-score risk-score.{{ 'critical' if cat.avg_score >= 75 else ('high' if cat.avg_score >= 50 else ('medium' if cat.avg_score >= 25 else 'low')) }}">
+                            <div class="risk-score {{ 'critical' if cat.avg_score >= 75 else ('high' if cat.avg_score >= 50 else ('medium' if cat.avg_score >= 25 else 'low')) }}">
                                 {{ cat.avg_score|round(0)|int }}
                             </div>
                         </td>

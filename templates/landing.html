@@ -6,7 +6,7 @@
     <!-- Navigation -->
     <nav class="landing-nav">
         <div class="landing-nav-inner">
-            <div class="landing-logo">
+            <div class="landing-nav-brand">
                 <i class="fas fa-brain"></i>
                 <span>CIVIC-PREDICT AI</span>
             </div>
@@ -20,10 +20,11 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="landing-hero">
+    <section class="hero">
         <div class="hero-bg-pattern"></div>
         <div class="container">
             <div class="hero-content">
+                <div class="hero-text">
                 <div class="hero-badge">
                     <i class="fas fa-flask"></i> Generative AI for Government
                 </div>
@@ -32,10 +33,10 @@
                     CIVIC-PREDICT AI transforms public-service data into predictive insights, risk scores, and actionable recommendations for smarter government decision-making.
                 </p>
                 <div class="hero-buttons">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-hero-primary">
+                    <a href="{{ url_for('dashboard') }}" class="btn hero-btn-primary">
                         <i class="fas fa-th-large"></i> Explore Dashboard
                     </a>
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-hero-outline">
+                    <a href="{{ url_for('dashboard') }}" class="btn hero-btn-outline">
                         <i class="fas fa-play-circle"></i> View Demo
                     </a>
                 </div>
@@ -51,6 +52,23 @@
                     <div class="hero-stat">
                         <span class="hero-stat-value">8</span>
                         <span class="hero-stat-label">Data Sources Integrated</span>
+                    </div>
+                </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-mockup">
+                        <div class="hero-mockup-bar"><span></span><span></span><span></span></div>
+                        <div class="hero-mockup-grid">
+                            <div class="hero-mockup-stat"><div class="value">50</div><div class="label">Active Issues</div></div>
+                            <div class="hero-mockup-stat"><div class="value" style="color:var(--critical)">22</div><div class="label">Critical</div></div>
+                            <div class="hero-mockup-stat"><div class="value" style="color:var(--high)">21</div><div class="label">High Risk</div></div>
+                        </div>
+                        <div class="hero-mockup-bars">
+                            <div class="bar"><div class="bar-fill" style="width:82%;background:var(--critical)"></div></div>
+                            <div class="bar"><div class="bar-fill" style="width:64%;background:var(--high)"></div></div>
+                            <div class="bar"><div class="bar-fill" style="width:46%;background:var(--medium)"></div></div>
+                            <div class="bar"><div class="bar-fill" style="width:30%"></div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,7 +111,7 @@
                 <h2>From Data to Decisive Action</h2>
                 <p>A clear intelligence pipeline that transforms scattered data into government-ready insights.</p>
             </div>
-            <div class="workflow-pipeline">
+            <div class="workflow-steps">
                 <div class="workflow-step">
                     <div class="step-number">1</div>
                     <div class="step-icon"><i class="fas fa-database"></i></div>
@@ -247,11 +265,11 @@
     </section>
 
     <!-- CTA -->
-    <section class="landing-cta">
+    <section class="cta-section">
         <div class="container">
             <h2>Ready to Transform Public Service?</h2>
             <p>Explore the CIVIC-PREDICT AI dashboard with realistic simulated data.</p>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-hero-primary btn-lg">
+            <a href="{{ url_for('dashboard') }}" class="btn hero-btn-primary btn-lg">
                 <i class="fas fa-th-large"></i> Launch Dashboard Demo
             </a>
         </div>

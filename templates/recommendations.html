@@ -47,7 +47,7 @@
     <div class="rec-card">
         <div class="rec-card-layout">
             <div class="rec-score-col">
-                <div class="risk-score risk-score.{{ issue.severity|lower }}">
+                <div class="risk-score {{ issue.severity|lower }}">
                     {{ issue.risk_score }}
                 </div>
             </div>
