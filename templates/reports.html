@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Reports - CIVIC-PREDICT AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="top-bar-left">
+        <h1 class="page-title-sm"><i class="fas fa-file-alt"></i> Reports</h1>
+        <p class="page-subtitle">Generate and export public-service risk reports.</p>
+    </div>
+</div>
+
+<!-- Report Configuration -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+        <h5 style="margin: 0; font-size: 1rem;"><i class="fas fa-cog"></i> Report Configuration</h5>
+    </div>
+    <div class="card-body">
+        <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Date Range</label>
+                <select class="form-select" id="reportDateRange" style="width: 100%;">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last Year</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Region</label>
+                <select class="form-select" id="reportRegion" style="width: 100%;">
+                    <option value="">All Regions</option>
+                    <option value="Bekasi">Bekasi</option>
+                    <option value="Jakarta Pusat">Jakarta Pusat</option>
+                    <option value="Jakarta Selatan">Jakarta Selatan</option>
+                    <option value="Jakarta Timur">Jakarta Timur</option>
+                    <option value="Jakarta Barat">Jakarta Barat</option>
+                    <option value="Jakarta Utara">Jakarta Utara</option>
+                    <option value="Depok">Depok</option>
+                    <option value="Tangerang">Tangerang</option>
+                    <option value="Tangerang Selatan">Tangerang Selatan</option>
+                    <option value="Bogor">Bogor</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Department</label>
+                <select class="form-select" id="reportDept" style="width: 100%;">
+                    <option value="">All Departments</option>
+                    <option value="Dinas PUPR">Dinas PUPR</option>
+                    <option value="Dinas Perhubungan">Dinas Perhubungan</option>
+                    <option value="Dinas Lingkungan Hidup">Dinas Lingkungan Hidup</option>
+                    <option value="Diskominfo">Diskominfo</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Risk Level</label>
+                <select class="form-select" id="reportRisk" style="width: 100%;">
+                    <option value="">All Levels</option>
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="generateReport()">
+                <i class="fas fa-file-alt"></i> Generate Report
+            </button>
+            <button class="btn btn-outline" style="margin-left: 8px;" onclick="printReport()">
+                <i class="fas fa-print"></i> Print / Export PDF
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Generated Report -->
+<div id="reportOutput">
+    <div class="report-container">
+        <!-- Report Header -->
+        <div class="report-header-block">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-brain" style="color: #fff; font-size: 1.25rem;"></i>
+                </div>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.5rem;">CIVIC-PREDICT AI</h2>
+                    <p style="margin: 0; color: var(--text-secondary);">Public Service Risk Report</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <span style="color: var(--text-secondary); font-size: 0.875rem;"><i class="fas fa-calendar"></i> Generated: {{ report_date }}</span>
+                <span style="color: var(--text-secondary); font-size: 0.875rem;"><i class="fas fa-clock"></i> Period: Last 30 Days</span>
+                <span class="report-badge">DEMO / SIMULATED DATA</span>
+            </div>
+        </div>
+
+        <div class="report-divider"></div>
+
+        <!-- Executive Summary -->
+        <h3 style="margin-bottom: 16px;"><i class="fas fa-chart-pie"></i> Executive Summary</h3>
+        <div class="report-summary-grid">
+            <div class="report-stat">
+                <div class="report-stat-value">{{ total_issues }}</div>
+                <div class="report-stat-label">Total Issues</div>
+            </div>
+            <div class="report-stat" style="border-left: 3px solid var(--severity-critical);">
+                <div class="report-stat-value" style="color: var(--severity-critical);">{{ critical_count }}</div>
+                <div class="report-stat-label">Critical</div>
+            </div>
+            <div class="report-stat" style="border-left: 3px solid var(--severity-high);">
+                <div class="report-stat-value" style="color: var(--severity-high);">{{ high_count }}</div>
+                <div class="report-stat-label">High</div>
+            </div>
+            <div class="report-stat" style="border-left: 3px solid var(--severity-medium);">
+                <div class="report-stat-value" style="color: var(--severity-medium);">{{ medium_count }}</div>
+                <div class="report-stat-label">Medium</div>
+            </div>
+            <div class="report-stat" style="border-left: 3px solid var(--severity-low);">
+                <div class="report-stat-value" style="color: var(--severity-low);">{{ low_count }}</div>
+                <div class="report-stat-label">Low</div>
+            </div>
+        </div>
+
+        <!-- Highest Risk Locations -->
+        <h3 style="margin: 24px 0 16px;"><i class="fas fa-map-marker-alt"></i> Highest Risk Locations</h3>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Issue</th>
+                        <th>Location</th>
+                        <th>City</th>
+                        <th>Risk Score</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in top_risks %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><strong>{{ issue.title }}</strong></td>
+                        <td>{{ issue.location_name }}</td>
+                        <td>{{ issue.city }}</td>
+                        <td>
+                            <div class="risk-score risk-score.{{ issue.severity|lower }}">
+                                {{ issue.risk_score }}
+                            </div>
+                        </td>
+                        <td><span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Key Recommendations -->
+        <h3 style="margin: 24px 0 16px;"><i class="fas fa-lightbulb"></i> Key Recommendations</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            {% for issue in top_risks[:5] %}
+            <div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; background: var(--bg-main); border-radius: var(--border-radius); border-left: 3px solid var(--severity-{{ issue.severity|lower }});">
+                <div class="risk-score risk-score.{{ issue.severity|lower }}" style="flex-shrink: 0;">
+                    {{ issue.risk_score }}
+                </div>
+                <div style="flex: 1;">
+                    <strong>{{ issue.title }}</strong> &mdash; {{ issue.department }}<br>
+                    <em style="color: var(--text-secondary); font-size: 0.875rem;">{{ issue.recommendation }}</em>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="report-divider"></div>
+
+        <!-- Footer -->
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.8125rem; margin-top: 16px;">
+            <small>This report was generated by CIVIC-PREDICT AI using simulated data for demonstration purposes.
+            Not intended for official government use. Contact: Ventor Team &mdash; SMA Islam Al Azhar 4 Bekasi</small>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function generateReport() {
+    showToast('Report generated successfully!', 'success');
+}
+
+function printReport() {
+    window.print();
+}
+</script>
+{% endblock %}

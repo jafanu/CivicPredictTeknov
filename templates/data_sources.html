@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Data Sources - CIVIC-PREDICT AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="top-bar-left">
+        <h1 class="page-title-sm"><i class="fas fa-database"></i> Data Sources</h1>
+        <p class="page-subtitle">Overview of integrated data sources powering the CIVIC-PREDICT AI platform.</p>
+    </div>
+</div>
+
+<!-- Info Banner -->
+<div class="card" style="border-left: 4px solid var(--color-accent); margin-bottom: 24px;">
+    <div class="card-body" style="padding: 16px 24px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-info-circle" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+            <div>
+                <strong>Simulated Data</strong>
+                <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                    This prototype uses simulated datasets. In production, these sources would connect to actual government databases and APIs.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Source Cards Grid -->
+<div class="sources-grid">
+    {% for source in data_sources %}
+    <div class="source-card">
+        <div class="source-header">
+            <div class="source-icon">
+                <i class="fas {{ source.icon }}"></i>
+            </div>
+            <div style="flex: 1;">
+                <h4 class="source-name">{{ source.name }}</h4>
+                <p class="source-desc">{{ source.description }}</p>
+            </div>
+            <div class="source-status {{ source.status|lower|replace(' ', '-') }}">
+                <span class="status-dot"></span>
+                {{ source.status }}
+            </div>
+        </div>
+        <div class="source-stats">
+            <div class="source-stat">
+                <span class="stat-label">Records</span>
+                <span class="stat-value">{{ "{:,}".format(source.records_count) }}</span>
+            </div>
+            <div class="source-stat">
+                <span class="stat-label">Last Updated</span>
+                <span class="stat-value">{{ source.last_updated }}</span>
+            </div>
+            <div class="source-stat">
+                <span class="stat-label">Type</span>
+                <span class="stat-value">Simulated</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Integration Summary -->
+<div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+        <h5 style="margin: 0; font-size: 1rem;"><i class="fas fa-plug"></i> Integration Summary</h5>
+    </div>
+    <div class="card-body">
+        <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 0;">
+            <div class="kpi-card" style="--kpi-color: var(--severity-low);">
+                <div class="kpi-icon" style="background: var(--severity-low-bg); color: var(--severity-low);"><i class="fas fa-check-circle"></i></div>
+                <div class="kpi-data">
+                    <div class="kpi-value">{{ data_sources|selectattr('status', 'equalto', 'Connected')|list|length }}</div>
+                    <div class="kpi-label">Connected</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-color: var(--severity-medium);">
+                <div class="kpi-icon" style="background: var(--severity-medium-bg); color: var(--severity-medium);"><i class="fas fa-sync-alt"></i></div>
+                <div class="kpi-data">
+                    <div class="kpi-value">{{ data_sources|selectattr('status', 'equalto', 'Processing')|list|length }}</div>
+                    <div class="kpi-label">Processing</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-color: var(--severity-critical);">
+                <div class="kpi-icon" style="background: var(--severity-critical-bg); color: var(--severity-critical);"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="kpi-data">
+                    <div class="kpi-value">{{ data_sources|selectattr('status', 'equalto', 'Needs Attention')|list|length }}</div>
+                    <div class="kpi-label">Needs Attention</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-color: var(--color-primary);">
+                <div class="kpi-icon"><i class="fas fa-database"></i></div>
+                <div class="kpi-data">
+                    <div class="kpi-value">{{ data_sources|length }}</div>
+                    <div class="kpi-label">Total Sources</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

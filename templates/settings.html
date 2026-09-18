@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Settings - CIVIC-PREDICT AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="top-bar-left">
+        <h1 class="page-title-sm"><i class="fas fa-cog"></i> Settings</h1>
+        <p class="page-subtitle">Platform settings and user preferences.</p>
+    </div>
+</div>
+
+<div class="settings-grid">
+    <!-- Profile Settings -->
+    <div class="card">
+        <div class="card-header">
+            <h5 style="margin: 0; font-size: 1rem;"><i class="fas fa-user"></i> Profile Settings</h5>
+        </div>
+        <div class="card-body">
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Name</label>
+                    <input type="text" class="form-input" value="{{ user.name }}" readonly style="width: 100%; background: var(--bg-main);">
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Username</label>
+                    <input type="text" class="form-input" value="{{ user.username }}" readonly style="width: 100%; background: var(--bg-main);">
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Role</label>
+                    <input type="text" class="form-input" value="{{ user.role }}" readonly style="width: 100%; background: var(--bg-main);">
+                </div>
+            </div>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label style="display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Department</label>
+                    <input type="text" class="form-input" value="{{ user.department }}" readonly style="width: 100%; background: var(--bg-main);">
+                </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 12px;">Profile editing is disabled in demo mode.</p>
+        </div>
+    </div>
+
+    <div>
+        <!-- Platform Settings -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h5 style="margin: 0; font-size: 1rem;"><i class="fas fa-sliders-h"></i> Platform Settings</h5>
+            </div>
+            <div class="card-body">
+                <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                    <div class="setting-info">
+                        <h6 style="margin: 0; font-size: 0.9375rem;">Notifications</h6>
+                        <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.8125rem;">Receive alerts for critical risk escalations</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                    <div class="setting-info">
+                        <h6 style="margin: 0; font-size: 0.9375rem;">Auto-refresh Dashboard</h6>
+                        <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.8125rem;">Automatically refresh dashboard data every 5 minutes</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color);">
+                    <div class="setting-info">
+                        <h6 style="margin: 0; font-size: 0.9375rem;">Email Reports</h6>
+                        <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.8125rem;">Send weekly risk reports via email</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+                    <div class="setting-info">
+                        <h6 style="margin: 0; font-size: 0.9375rem;">Demo Mode</h6>
+                        <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.8125rem;">Currently active &mdash; using simulated data</p>
+                    </div>
+                    <label class="toggle" style="opacity: 0.6; pointer-events: none;">
+                        <input type="checkbox" checked disabled>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="card">
+            <div class="card-header">
+                <h5 style="margin: 0; font-size: 1rem;"><i class="fas fa-info-circle"></i> System Information</h5>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Platform Version</span>
+                        <span style="font-weight: 600; font-size: 0.875rem;">1.0.0-prototype</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">AI Model</span>
+                        <span style="font-weight: 600; font-size: 0.875rem;">CIVIC-PREDICT v1 (Prototype)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Data Mode</span>
+                        <span style="font-weight: 600; font-size: 0.875rem;">Simulated / Demo</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Database</span>
+                        <span style="font-weight: 600; font-size: 0.875rem;">SQLite</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-secondary); font-size: 0.875rem;">Last Updated</span>
+                        <span style="font-weight: 600; font-size: 0.875rem;">August 16, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

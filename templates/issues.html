@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Issues - CIVIC-PREDICT AI{% endblock %}
+{% block topbar_title %}Issues{% endblock %}
+{% block topbar_breadcrumb %}Issues{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-triangle-exclamation"></i> Issues</h1>
+    <p class="text-muted mb-0">Comprehensive list of all public-service issues across the region.</p>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar mb-4">
+  <div class="filter-group">
+    <label>Search</label>
+    <input type="text" class="form-input" id="searchInput" placeholder="Search issues..." onkeyup="filterTable()">
+  </div>
+  <div class="filter-group">
+    <label>Category</label>
+    <select class="form-select" id="filterCategory" onchange="filterTable()">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Department</label>
+    <select class="form-select" id="filterDept" onchange="filterTable()">
+      <option value="">All Departments</option>
+      {% for dept in departments %}
+      <option value="{{ dept }}" {% if selected_department == dept %}selected{% endif %}>{{ dept }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Severity</label>
+    <select class="form-select" id="filterSeverity" onchange="filterTable()">
+      <option value="">All Severities</option>
+      <option value="Critical">Critical</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Status</label>
+    <select class="form-select" id="filterStatus" onchange="filterTable()">
+      <option value="">All Status</option>
+      {% for status in statuses %}
+      <option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<!-- Results Count -->
+<div class="mb-3">
+  Showing <strong id="resultCount">{{ issues|length }}</strong> of {{ issues|length }} issues
+</div>
+
+<!-- Issues Table -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="data-table" id="issuesTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)" style="cursor:pointer">Risk <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(1)" style="cursor:pointer">Issue <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(2)" style="cursor:pointer">Category <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(3)" style="cursor:pointer">Location <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(4)" style="cursor:pointer">Department <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(5)" style="cursor:pointer">Severity <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(6)" style="cursor:pointer">Status <i class="fas fa-sort"></i></th>
+            <th onclick="sortTable(7)" style="cursor:pointer">Date <i class="fas fa-sort"></i></th>
+            <th>Trend</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for issue in issues %}
+          <tr data-category="{{ issue.category }}" data-dept="{{ issue.department }}"
+              data-severity="{{ issue.severity }}" data-status="{{ issue.status }}">
+            <td>
+              <div class="risk-score {{ issue.severity|lower }}">{{ issue.risk_score }}</div>
+            </td>
+            <td><strong>{{ issue.title }}</strong></td>
+            <td>{{ issue.category }}</td>
+            <td>{{ issue.location_name }}</td>
+            <td>{{ issue.department }}</td>
+            <td><span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }}</span></td>
+            <td><span class="badge badge-{{ issue.status|lower|replace(' ', '-') }}">{{ issue.status }}</span></td>
+            <td>{{ issue.reported_date }}</td>
+            <td>
+              {% if issue.predicted_trend == 'Worsening' %}
+              <span class="trend-worsening"><i class="fas fa-arrow-trend-up"></i></span>
+              {% elif issue.predicted_trend == 'Improving' %}
+              <span class="trend-improving"><i class="fas fa-arrow-trend-down"></i></span>
+              {% else %}
+              <span class="trend-stable"><i class="fas fa-minus"></i></span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('issue_detail', issue_id=issue.id) }}" class="btn btn-sm btn-outline">
+                <i class="fas fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('filterCategory').value;
+  const dept = document.getElementById('filterDept').value;
+  const sev = document.getElementById('filterSeverity').value;
+  const status = document.getElementById('filterStatus').value;
+
+  const rows = document.querySelectorAll('#issuesTable tbody tr');
+  let count = 0;
+
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const matchSearch = !search || text.includes(search);
+    const matchCat = !cat || row.dataset.category === cat;
+    const matchDept = !dept || row.dataset.dept === dept;
+    const matchSev = !sev || row.dataset.severity === sev;
+    const matchStatus = !status || row.dataset.status === status;
+
+    if (matchSearch && matchCat && matchDept && matchSev && matchStatus) {
+      row.style.display = '';
+      count++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  document.getElementById('resultCount').textContent = count;
+}
+
+let sortDir = {};
+function sortTable(col) {
+  const table = document.getElementById('issuesTable');
+  const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+  sortDir[col] = !sortDir[col];
+  const dir = sortDir[col] ? 1 : -1;
+
+  rows.sort((a, b) => {
+    let aVal = a.cells[col].textContent.trim();
+    let bVal = b.cells[col].textContent.trim();
+
+    if (!isNaN(aVal) && !isNaN(bVal)) {
+      return (parseFloat(aVal) - parseFloat(bVal)) * dir;
+    }
+    return aVal.localeCompare(bVal) * dir;
+  });
+
+  const tbody = table.querySelector('tbody');
+  rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+{% endblock %}

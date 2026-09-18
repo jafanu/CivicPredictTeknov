@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Risk Map - CIVIC-PREDICT AI{% endblock %}
+{% block topbar_title %}Risk Map{% endblock %}
+{% block topbar_breadcrumb %}Risk Map{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-map-location-dot"></i> Risk Map</h1>
+    <p class="text-muted mb-0">Geographic visualization of public-service risks across the region.</p>
+  </div>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar mb-4">
+  <div class="filter-group">
+    <label>Risk Level</label>
+    <select class="form-select" id="filterRisk" onchange="filterMap()">
+      <option value="">All Levels</option>
+      <option value="Critical">Critical</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Category</label>
+    <select class="form-select" id="filterCategory" onchange="filterMap()">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+      <option value="{{ cat }}">{{ cat }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>City</label>
+    <select class="form-select" id="filterCity" onchange="filterMap()">
+      <option value="">All Cities</option>
+      {% for city in cities %}
+      <option value="{{ city }}">{{ city }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Status</label>
+    <select class="form-select" id="filterStatus" onchange="filterMap()">
+      <option value="">All Status</option>
+      {% for status in statuses %}
+      <option value="{{ status }}">{{ status }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-outline btn-sm" onclick="resetFilters()">
+    <i class="fas fa-undo"></i> Reset
+  </button>
+</div>
+
+<!-- Map Stats Bar -->
+<div class="map-stats-bar mb-3">
+  <div class="map-stat">
+    <i class="fas fa-circle" style="color:#dc2626"></i>
+    <span>Critical: <strong id="countCritical">0</strong></span>
+  </div>
+  <div class="map-stat">
+    <i class="fas fa-circle" style="color:#ea580c"></i>
+    <span>High: <strong id="countHigh">0</strong></span>
+  </div>
+  <div class="map-stat">
+    <i class="fas fa-circle" style="color:#ca8a04"></i>
+    <span>Medium: <strong id="countMedium">0</strong></span>
+  </div>
+  <div class="map-stat">
+    <i class="fas fa-circle" style="color:#16a34a"></i>
+    <span>Low: <strong id="countLow">0</strong></span>
+  </div>
+  <div class="map-stat">
+    <span>Total: <strong id="countTotal">0</strong></span>
+  </div>
+</div>
+
+<!-- Map -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="map-wrap">
+      <div id="riskMap" class="map-container" style="height:600px"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const allIssues = {{ issues_json|safe }};
+initRiskMap('riskMap', allIssues);
+updateCounts(allIssues);
+
+function filterMap() {
+  const risk = document.getElementById('filterRisk').value;
+  const cat = document.getElementById('filterCategory').value;
+  const city = document.getElementById('filterCity').value;
+  const status = document.getElementById('filterStatus').value;
+
+  let filtered = allIssues.filter(i => {
+    if (risk && i.severity !== risk) return false;
+    if (cat && i.category !== cat) return false;
+    if (city && i.city !== city) return false;
+    if (status && i.status !== status) return false;
+    return true;
+  });
+
+  initRiskMap('riskMap', filtered);
+  updateCounts(filtered);
+}
+
+function resetFilters() {
+  document.getElementById('filterRisk').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterCity').value = '';
+  document.getElementById('filterStatus').value = '';
+  initRiskMap('riskMap', allIssues);
+  updateCounts(allIssues);
+}
+
+function updateCounts(issues) {
+  document.getElementById('countCritical').textContent = issues.filter(i => i.severity === 'Critical').length;
+  document.getElementById('countHigh').textContent = issues.filter(i => i.severity === 'High').length;
+  document.getElementById('countMedium').textContent = issues.filter(i => i.severity === 'Medium').length;
+  document.getElementById('countLow').textContent = issues.filter(i => i.severity === 'Low').length;
+  document.getElementById('countTotal').textContent = issues.length;
+}
+</script>
+{% endblock %}

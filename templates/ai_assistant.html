@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block title %}AI Assistant - CIVIC-PREDICT AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="top-bar-left">
+        <h1 class="page-title-sm"><i class="fas fa-robot"></i> CIVIC AI Assistant</h1>
+        <p class="page-subtitle">AI-powered decision support for government officials.</p>
+    </div>
+</div>
+
+<!-- Disclaimer Banner -->
+<div class="card" style="border-left: 4px solid var(--color-primary); margin-bottom: 24px;">
+    <div class="card-body" style="padding: 16px 24px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-info-circle" style="color: var(--color-primary); font-size: 1.25rem;"></i>
+            <div>
+                <strong>Decision-Support Tool</strong>
+                <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                    CIVIC AI is a decision-support assistant using simulated data. Final government decisions remain with authorized officials.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Container -->
+<div class="chat-container">
+    <div class="chat-messages" id="chatContainer">
+        <!-- Welcome Message -->
+        <div class="chat-msg ai">
+            <div class="chat-avatar ai">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="chat-bubble ai">
+                <p>Hello! I'm <strong>CIVIC AI</strong>, your public-service intelligence assistant.</p>
+                <p>I can help you analyze risks, understand predictions, and identify priority actions based on the data in the system.</p>
+                <p>How can I help you today?</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggested Questions -->
+    <div class="suggestions-row" id="aiSuggestions">
+        <button class="suggestion-chip" onclick="askQuestion('Which problems should we prioritize today?')">
+            <i class="fas fa-fire"></i> Which problems should we prioritize today?
+        </button>
+        <button class="suggestion-chip" onclick="askQuestion('Which areas have the highest risk?')">
+            <i class="fas fa-map-marker-alt"></i> Which areas have the highest risk?
+        </button>
+        <button class="suggestion-chip" onclick="askQuestion('What problems are predicted to worsen?')">
+            <i class="fas fa-chart-line"></i> What problems are predicted to worsen?
+        </button>
+        <button class="suggestion-chip" onclick="askQuestion('What are the most common problems this month?')">
+            <i class="fas fa-chart-bar"></i> What are the most common problems?
+        </button>
+        <button class="suggestion-chip" onclick="askQuestion('Which department has the most issues?')">
+            <i class="fas fa-building"></i> Which department has the most issues?
+        </button>
+        <button class="suggestion-chip" onclick="askQuestion('Show me flooding issues')">
+            <i class="fas fa-water"></i> Show me flooding issues
+        </button>
+    </div>
+
+    <!-- Input Area -->
+    <div class="chat-input-area">
+        <input type="text" class="chat-input" id="aiInput"
+               placeholder="Ask about public-service risks, predictions, or recommendations..."
+               onkeypress="if(event.key==='Enter')sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function askQuestion(q) {
+    document.getElementById('aiInput').value = q;
+    sendMessage();
+}
+
+function sendMessage() {
+    var input = document.getElementById('aiInput');
+    var msg = input.value.trim();
+    if (!msg) return;
+
+    var container = document.getElementById('chatContainer');
+    var suggestions = document.getElementById('aiSuggestions');
+
+    // Hide suggestions after first message
+    suggestions.style.display = 'none';
+
+    // Add user message
+    var userMsg = document.createElement('div');
+    userMsg.className = 'chat-msg user';
+    userMsg.innerHTML =
+        '<div class="chat-bubble user">' +
+            '<p>' + escapeHtml(msg) + '</p>' +
+        '</div>' +
+        '<div class="chat-avatar user">' +
+            '<i class="fas fa-user"></i>' +
+        '</div>';
+    container.appendChild(userMsg);
+
+    input.value = '';
+
+    // Add typing indicator
+    var typingId = 'typing-' + Date.now();
+    var typingEl = document.createElement('div');
+    typingEl.className = 'chat-msg ai';
+    typingEl.id = typingId;
+    typingEl.innerHTML =
+        '<div class="chat-avatar ai">' +
+            '<i class="fas fa-brain"></i>' +
+        '</div>' +
+        '<div class="chat-bubble ai" style="padding: 12px 16px;">' +
+            '<span class="typing-dot"></span>' +
+            '<span class="typing-dot"></span>' +
+            '<span class="typing-dot"></span>' +
+        '</div>';
+    container.appendChild(typingEl);
+    container.scrollTop = container.scrollHeight;
+
+    // Call API
+    fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+    })
+    .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
+    .then(function(data) {
+        var typingNode = document.getElementById(typingId);
+        if (typingNode) typingNode.remove();
+
+        var aiMsg = document.createElement('div');
+        aiMsg.className = 'chat-msg ai';
+        aiMsg.innerHTML =
+            '<div class="chat-avatar ai">' +
+                '<i class="fas fa-brain"></i>' +
+            '</div>' +
+            '<div class="chat-bubble ai">' +
+                '<p>' + (data.response || 'I could not generate a response.') + '</p>' +
+            '</div>';
+        container.appendChild(aiMsg);
+        container.scrollTop = container.scrollHeight;
+    })
+    .catch(function() {
+        var typingNode = document.getElementById(typingId);
+        if (typingNode) typingNode.remove();
+
+        var errMsg = document.createElement('div');
+        errMsg.className = 'chat-msg ai';
+        errMsg.innerHTML =
+            '<div class="chat-avatar ai">' +
+                '<i class="fas fa-brain"></i>' +
+            '</div>' +
+            '<div class="chat-bubble ai">' +
+                '<p>I apologize, but I encountered an error processing your request. Please try again.</p>' +
+            '</div>';
+        container.appendChild(errMsg);
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+
+<style>
+.typing-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    margin: 0 2px;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+}
+</style>
+{% endblock %}

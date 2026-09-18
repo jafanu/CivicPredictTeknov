@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Recommendations - CIVIC-PREDICT AI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="top-bar-left">
+        <h1 class="page-title-sm"><i class="fas fa-lightbulb"></i> AI Recommendations</h1>
+        <p class="page-subtitle">AI-generated action recommendations based on risk analysis and predictive modeling.</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="kpi-grid">
+    <div class="kpi-card" style="--kpi-color: var(--severity-critical);">
+        <div class="kpi-icon" style="background: var(--severity-critical-bg); color: var(--severity-critical);"><i class="fas fa-exclamation-circle"></i></div>
+        <div class="kpi-data">
+            <div class="kpi-value">{{ recommendations|selectattr('severity', 'equalto', 'Critical')|list|length }}</div>
+            <div class="kpi-label">Critical Actions</div>
+        </div>
+    </div>
+    <div class="kpi-card" style="--kpi-color: var(--severity-high);">
+        <div class="kpi-icon" style="background: var(--severity-high-bg); color: var(--severity-high);"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="kpi-data">
+            <div class="kpi-value">{{ recommendations|selectattr('severity', 'equalto', 'High')|list|length }}</div>
+            <div class="kpi-label">High Priority</div>
+        </div>
+    </div>
+    <div class="kpi-card" style="--kpi-color: var(--status-active);">
+        <div class="kpi-icon" style="background: var(--status-active-bg); color: var(--status-active);"><i class="fas fa-clock"></i></div>
+        <div class="kpi-data">
+            <div class="kpi-value">{{ recommendations|selectattr('status', 'equalto', 'Active')|list|length }}</div>
+            <div class="kpi-label">Active Issues</div>
+        </div>
+    </div>
+    <div class="kpi-card" style="--kpi-color: var(--severity-low);">
+        <div class="kpi-icon" style="background: var(--severity-low-bg); color: var(--severity-low);"><i class="fas fa-check-circle"></i></div>
+        <div class="kpi-data">
+            <div class="kpi-value">{{ recommendations|length }}</div>
+            <div class="kpi-label">Total Recommendations</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommendations List -->
+<div class="rec-list">
+    {% for issue in recommendations %}
+    <div class="rec-card">
+        <div class="rec-card-layout">
+            <div class="rec-score-col">
+                <div class="risk-score risk-score.{{ issue.severity|lower }}">
+                    {{ issue.risk_score }}
+                </div>
+            </div>
+            <div class="rec-main">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                    <h5 style="margin: 0;">{{ issue.title }}</h5>
+                    <span class="badge badge-{{ issue.severity|lower }}">{{ issue.severity }}</span>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 12px;">
+                    <i class="fas fa-map-marker-alt"></i> {{ issue.location_name }}, {{ issue.city }}
+                </p>
+                <div style="background: var(--color-primary-bg); border-radius: var(--border-radius); padding: 12px 16px; margin-bottom: 12px;">
+                    <h6 style="margin: 0 0 6px 0; color: var(--color-primary); font-size: 0.8125rem;">
+                        <i class="fas fa-brain"></i> AI Analysis
+                    </h6>
+                    <p style="margin: 0; font-size: 0.875rem; color: var(--text-secondary);">
+                        Risk Score: <strong>{{ issue.risk_score }}/100</strong> |
+                        {{ issue.complaint_count }} complaints |
+                        {{ issue.historical_incidents }} past incidents |
+                        Asset: {{ issue.asset_condition }} |
+                        Impact: {{ issue.public_impact }}
+                    </p>
+                </div>
+                <div class="rec-action-box">
+                    <h6 style="margin: 0 0 6px 0; font-size: 0.8125rem;">
+                        <i class="fas fa-bullseye" style="color: var(--severity-low);"></i> Recommended Action
+                    </h6>
+                    <p style="margin: 0; font-size: 0.875rem;">{{ issue.recommendation }}</p>
+                </div>
+            </div>
+            <div class="rec-actions-col">
+                <div class="rec-dept-tag">
+                    <i class="fas fa-building"></i>
+                    <span>{{ issue.department }}</span>
+                </div>
+                <a href="{{ url_for('issue_detail', issue_id=issue.id) }}" class="btn btn-outline btn-sm" style="margin-top: 8px;">
+                    <i class="fas fa-eye"></i> View
+                </a>
+                <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="showToast('Department assigned to {{ issue.department }}')">
+                    <i class="fas fa-user-check"></i> Assign
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
