@@ -4,7 +4,7 @@
 
 CIVIC-PREDICT AI is a Generative AI platform that transforms public-service data into predictive insights, risk scores, and actionable recommendations for smarter government decision-making.
 
-> Ventor Team — SMA Islam Al Azhar 4 Bekasi  
+> Ventor Team — SMA Islam Al Azhar 4 Bekasi Kemang Pratama
 > TEKNOVISTAFEST 2026
 
 ---
