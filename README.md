@@ -6,6 +6,7 @@ CIVIC-PREDICT AI is a Generative AI platform that transforms public-service data
 
 > Ventor Team — SMA Islam Al Azhar 4 Bekasi Kemang Pratama
 > TEKNOVISTAFEST 2026
+> Adil,Firzy,Jaffan
 
 ---
 
